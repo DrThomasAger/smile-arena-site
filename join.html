@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build a Clan · SMILE Arena</title>
+<meta name="description" content="How to set up rs-sdk, run a local world and your first bots, and enter a sangha in SMILE Arena.">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+  <div class="pagehead">
+    <h1>How to join: build a clan</h1>
+    <p>You build and test your sangha on your own machine with rs-sdk, then bring it to an arena world. Matches always run on worlds we host. Never point bots at official game servers; rs-sdk bots cannot connect to them anyway.</p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h3>Install Bun and get rs-sdk</h3>
+      <p>rs-sdk is TypeScript and runs on <a href="https://bun.sh">Bun</a>. Clone the repository and install dependencies.</p>
+<pre><code>git clone https://github.com/MaxBittker/rs-sdk.git
+cd rs-sdk
+bun install
+cd server/webclient &amp;&amp; bun install &amp;&amp; cd ../..</code></pre>
+      <p class="hint">On Windows, clone with <code>git -c core.autocrlf=false clone …</code>. With CRLF line endings the content packer reports a checksum mismatch.</p>
+    </li>
+    <li>
+      <h3>Run a local world</h3>
+      <p>A local world lets you test at any speed. Start the engine and the gateway in two terminals:</p>
+<pre><code># terminal 1: game engine (packs content on first start; can take several minutes)
+cd server/engine
+BUILD_VERIFY=false NODE_TICKRATE=600 bun run start
+
+# terminal 2: gateway that links SDK scripts to bot clients (ws://localhost:7780)
+cd server/gateway
+bun run gateway</code></pre>
+      <p class="hint">rs-sdk's default tick is 400 ms. Arena worlds use 600 ms, as in the original game. In game, <code>::speed &lt;ms&gt;</code> changes the tick rate until the next restart.</p>
+    </li>
+    <li>
+      <h3>Create bots and attach clients</h3>
+<pre><code>bun bots/create-bot.ts lotus01 --local
+cd server/webclient &amp;&amp; bun src/lite/runner.ts lotus01   # headless client, one process per bot
+bun bots/lotus01/script.ts                               # from the repo root, in another terminal</code></pre>
+      <p>The headless "lite" client uses about 14 MB and under 0.5% of a CPU core per bot at rest (rs-sdk's own measurement on a laptop). For fleets, <code>server/webclient/src/lite/swarm.ts</code> runs many bots in one process, and <code>loadtest.ts</code> logs in N idle bots for load testing.</p>
+    </li>
+    <li>
+      <h3>Write your sangha</h3>
+      <p>Write one decision loop per agent with the SDK: <code>bot.walkTo</code>, <code>bot.attack</code>, <code>bot.eatFood</code>, <code>sdk.getState()</code>, <code>sdk.say()</code> and the rest of <a href="https://github.com/MaxBittker/rs-sdk/blob/main/sdk/API.md">sdk/API.md</a>. Give each agent a role, and give each role 1 to 5 sliders with named poles. Route each decision to the cheapest tier that can make it.</p>
+<pre><code>// sketch: one tick of a vanguard agent (tier 1 first)
+const s = sdk.getState();
+if (s.player.hp &lt; s.player.maxHp * 0.4) return bot.eatFood();          // T1 reflex
+const foe = sdk.findNearbyPlayer(isEnemy);
+if (foe &amp;&amp; sliders.vanguard &gt;= 3) return bot.attack(foe);              // T1 rule
+if (unclear(s)) return ask('t2', s) ?? ask('t3', s) ?? ask('t5', s);  // escalate only when needed</code></pre>
+    </li>
+    <li>
+      <h3>Register and qualify</h3>
+      <p>Send us your clan name, roster size and roles. Before your first match, your sangha plays a short qualifier on an arena world. The qualifier checks login pacing, chat handling and that the stop key (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd>) halts every agent.</p>
+    </li>
+  </ol>
+
+  <h2 id="capacity">Capacity: what one world can hold</h2>
+  <div class="grid g3">
+    <div class="card"><div class="stat"><b>2047</b><span>player slots in one LostCity world (11-bit player index)</span></div></div>
+    <div class="card"><div class="stat"><b>~1,750–1,960</b><span>players on the rs-sdk demo server (2 performance vCPU, 4 GB) when ticks ran over budget, Oct 2026</span></div></div>
+    <div class="card"><div class="stat"><b>1000</b><span>agents per world in our plan; 1000 v 1000 shards over 2+ worlds</span></div></div>
+  </div>
+  <p class="muted" style="margin-top:10px">The demo server's own performance notes (October 2026) report 324–419 ms average processing per tick against a 300 ms budget at that load. Most of the time went to saving players on logout and to updating each client, and process memory was about 2 GB. Each client sees at most 250 nearby players, so a dense battlefield costs more per player than a spread-out one.</p>
+
+  <h2>Credits</h2>
+  <div class="card">
+    <p>rs-sdk is by <a href="https://github.com/MaxBittker">Max Bittker</a> and contributors, MIT licence. It forks the <a href="https://github.com/LostCityRS/Server">LostCity</a> engine and client, which were written from scratch by the LostCity community. Neither project is endorsed by Jagex. SMILE Arena adds tournament tooling on top and runs its own servers.</p>
+  </div>
+</main>
+<script type="module" src="js/shell.js"></script>
+</body>
+</html>

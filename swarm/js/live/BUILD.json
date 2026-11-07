@@ -1,0 +1,20 @@
+{
+  "from": "swarm/",
+  "files": [
+    "core/bus.mjs",
+    "core/index.mjs",
+    "core/message.mjs",
+    "core/node.mjs",
+    "core/policies.mjs",
+    "core/router.mjs",
+    "core/swarm.mjs",
+    "core/team.mjs",
+    "core/log/innovation.mjs",
+    "adapters/sim/index.mjs",
+    "formats/schema.mjs",
+    "formats/wiring.mjs",
+    "formats/render.mjs",
+    "formats/index.browser.mjs as formats/index.mjs"
+  ],
+  "note": "Built by scripts/build-swarm.mjs; edit the sources under swarm/."
+}

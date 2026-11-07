@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cost Calculator · SMILE Arena</title>
+<meta name="description" content="Estimate the cost of an agent-swarm match before it starts: agents, minutes, decisions per minute, tier routing, token prices and servers.">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+  <div class="pagehead">
+    <h1>Cost calculator</h1>
+    <p>Every match shows an estimate before it starts. Change any number below. All prices are editable placeholders: foundation-model prices are Anthropic API list prices recorded <span id="asof"></span>; local GPU and server prices are our assumptions. Check current prices before you budget real money.</p>
+  </div>
+
+  <div class="calc">
+    <form class="grid" id="form" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>Match</legend>
+        <div class="fgrid">
+          <label class="f">Agents per side <input type="number" id="agentsPerSide" min="1" max="5000" step="1"></label>
+          <label class="f">Sides (clans) <input type="number" id="sides" min="1" max="64" step="1"></label>
+          <label class="f">Match minutes <input type="number" id="matchMinutes" min="1" max="1440" step="1"></label>
+          <label class="f">Decisions per agent per minute <input type="number" id="decisionsPerAgentPerMin" min="0" step="0.5"></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <span class="hint">Presets:</span>
+          <button class="btn sm" type="button" data-preset="100">100 v 100 · 30 min</button>
+          <button class="btn sm" type="button" data-preset="1000">1000 v 1000 · 30 min</button>
+          <button class="btn sm" type="button" data-preset="speed">Speedrun · 8 x 25 · 60 min</button>
+          <button class="btn sm" type="button" data-preset="reset">Reset all</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tier routing (share of decisions, %)</legend>
+        <div id="shares"></div>
+        <p class="hint" id="share-sum"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tokens per decision</legend>
+        <div class="fgrid">
+          <label class="f">T2 small model, in <input type="number" id="smallTokensIn" min="0" step="10"></label>
+          <label class="f">T2 small model, out <input type="number" id="smallTokensOut" min="0" step="1"></label>
+          <label class="f">T3–T5 LLM, in <input type="number" id="llmTokensIn" min="0" step="50"></label>
+          <label class="f">T3–T5 LLM, out <input type="number" id="llmTokensOut" min="0" step="10"></label>
+          <label class="f">Prompt-cache hit share % <input type="number" id="cacheHitShare" min="0" max="100" step="5"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Foundation model (T5) · $ per million tokens</legend>
+        <div class="fgrid">
+          <label class="f">Model preset <select id="foundationModel"></select></label>
+          <label class="f">Input $/M <input type="number" id="f-in" min="0" step="0.01"></label>
+          <label class="f">Cached input $/M <input type="number" id="f-cachedIn" min="0" step="0.01"></label>
+          <label class="f">Output $/M <input type="number" id="f-out" min="0" step="0.01"></label>
+        </div>
+        <p class="hint" id="f-src"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Strategist translation · per clan</legend>
+        <p class="hint">Each strategist message becomes sangha-wide intent and role sliders through one foundation-model call.</p>
+        <div class="fgrid">
+          <label class="f">Calls per minute <input type="number" id="strategistCallsPerMin" min="0" step="0.5"></label>
+          <label class="f">Tokens in <input type="number" id="strategistTokensIn" min="0" step="100"></label>
+          <label class="f">Tokens out <input type="number" id="strategistTokensOut" min="0" step="50"></label>
+          <label class="f">Model preset <select id="strategistModel"></select></label>
+          <label class="f">Input $/M <input type="number" id="s-in" min="0" step="0.01"></label>
+          <label class="f">Cached input $/M <input type="number" id="s-cachedIn" min="0" step="0.01"></label>
+          <label class="f">Output $/M <input type="number" id="s-out" min="0" step="0.01"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Local models (GPU rental) · placeholders</legend>
+        <div class="fgrid" id="gpus"></div>
+        <p class="hint">Cost per token assumes the GPU is kept busy by batched requests from the whole swarm.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Servers · placeholders</legend>
+        <div class="fgrid">
+          <label class="f">Agents per world <input type="number" id="agentsPerWorld" min="1" max="2047" step="50"></label>
+          <label class="f">vCPU per world <input type="number" id="vcpuPerWorld" min="1" step="1"></label>
+          <label class="f">Bots per vCPU (clients + controller) <input type="number" id="botsPerVcpu" min="1" step="10"></label>
+          <label class="f">$ per vCPU-hour <input type="number" id="dollarsPerVcpuHour" min="0" step="0.005"></label>
+          <label class="f">Cooperative share of decisions % <input type="number" id="cooperativeShare" min="0" max="100" step="5"></label>
+        </div>
+        <p class="hint">A LostCity world has 2047 player slots. The rs-sdk demo server went over its tick budget at 1,750–1,960 players on 2 vCPUs, so we plan 1000 agents per world.</p>
+      </fieldset>
+    </form>
+
+    <aside class="out">
+      <div class="card accent" id="result" aria-live="polite">
+        <div class="row" style="justify-content:space-between">
+          <span class="muted">Estimated cost per match</span>
+          <div class="toggle" role="group" aria-label="View">
+            <button type="button" class="on" data-view="cost">Cost</button>
+            <button type="button" data-view="smile">SMILE view</button>
+          </div>
+        </div>
+        <div class="big-num" id="total">$0</div>
+        <div id="cost-view">
+          <dl class="kv">
+            <dt>Agents</dt><dd id="o-agents"></dd>
+            <dt>Decisions</dt><dd id="o-decisions"></dd>
+            <dt>Per agent-hour</dt><dd id="o-aph"></dd>
+            <dt>Per 1000 v 1000 hour</dt><dd id="o-big"></dd>
+            <dt>Worlds · vCPU</dt><dd id="o-servers"></dd>
+          </dl>
+          <div class="bars" id="bars"></div>
+        </div>
+        <div id="smile-view" hidden>
+          <dl class="kv">
+            <dt>Cooperative decisions</dt><dd id="o-coop"></dd>
+            <dt>Cooperation per $</dt><dd id="o-cpd"></dd>
+            <dt>Forbearance (no LLM)</dt><dd id="o-forb"></dd>
+            <dt>Decisions per LLM call</dt><dd id="o-dpl"></dd>
+          </dl>
+          <div class="stack" id="stack" aria-label="Decisions by tier"></div>
+          <p class="hint" style="margin-top:8px">In SMILE, money is shown as the cooperation it buys. Raise cooperation per dollar by moving decisions to cheaper tiers and by giving the sangha clearer shared intent.</p>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:8px">Same model as <code>node scripts/cost.mjs</code> in the repository.</p>
+    </aside>
+  </div>
+</main>
+<script type="module" src="js/shell.js"></script>
+<script type="module" src="js/cost-page.js"></script>
+</body>
+</html>
