@@ -1,0 +1,298 @@
+{
+ "generatedAt": "2026-11-14T06:48:41.296Z",
+ "example": true,
+ "note": "EXAMPLE DATA. No SMILE Arena matches have been played yet. These invented results exist only to exercise the Glicko-2 pipeline and the leaderboard pages. Real results replace this file.",
+ "source": "data/results.example.json",
+ "boards": {
+  "clan-wars": {
+   "title": "Clan wars",
+   "unit": "clan",
+   "events": [
+    "Week 1",
+    "Week 2",
+    "Week 3"
+   ],
+   "rows": [
+    {
+     "name": "Edgeville Embers",
+     "rating": 1815,
+     "rd": 220,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1375
+    },
+    {
+     "name": "Lotus Sangha",
+     "rating": 1658,
+     "rd": 218,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1222
+    },
+    {
+     "name": "Falador Fellowship",
+     "rating": 1623,
+     "rd": 217,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1190
+    },
+    {
+     "name": "Karamja Kindred",
+     "rating": 1508,
+     "rd": 219,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1070
+    },
+    {
+     "name": "Lumbridge Lantern",
+     "rating": 1492,
+     "rd": 219,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1054
+    },
+    {
+     "name": "Varrock Vanguard",
+     "rating": 1377,
+     "rd": 217,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 944
+    },
+    {
+     "name": "Al Kharid Accord",
+     "rating": 1342,
+     "rd": 218,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 906
+    },
+    {
+     "name": "Draynor Dawn",
+     "rating": 1185,
+     "rd": 220,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 744
+    }
+   ]
+  },
+  "speedrun": {
+   "title": "Speedruns (races)",
+   "unit": "sangha",
+   "events": [
+    "Race 1: Any% Dragon Slayer, 25 agents",
+    "Race 2: Fastest quest cape route, 50 agents",
+    "Race 3: Total level 500, 1 agent"
+   ],
+   "rows": [
+    {
+     "name": "Lotus Sangha",
+     "rating": 1786,
+     "rd": 145,
+     "vol": 0.06,
+     "games": 12,
+     "conservative": 1496
+    },
+    {
+     "name": "Edgeville Embers",
+     "rating": 1692,
+     "rd": 145,
+     "vol": 0.06,
+     "games": 12,
+     "conservative": 1402
+    },
+    {
+     "name": "Karamja Kindred",
+     "rating": 1634,
+     "rd": 143,
+     "vol": 0.06,
+     "games": 12,
+     "conservative": 1347
+    },
+    {
+     "name": "Lumbridge Lantern",
+     "rating": 1595,
+     "rd": 188,
+     "vol": 0.06,
+     "games": 5,
+     "conservative": 1219
+    },
+    {
+     "name": "Varrock Vanguard",
+     "rating": 1500,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 1082
+    },
+    {
+     "name": "Al Kharid Accord",
+     "rating": 1280,
+     "rd": 188,
+     "vol": 0.06,
+     "games": 5,
+     "conservative": 904
+    },
+    {
+     "name": "Falador Fellowship",
+     "rating": 1236,
+     "rd": 217,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 801
+    },
+    {
+     "name": "Draynor Dawn",
+     "rating": 1068,
+     "rd": 170,
+     "vol": 0.06,
+     "games": 9,
+     "conservative": 728
+    }
+   ]
+  },
+  "deadman": {
+   "title": "Deadman worlds",
+   "unit": "clan",
+   "events": [
+    "Season 0, world 1: last sangha standing",
+    "Season 0, world 2: last sangha standing"
+   ],
+   "rows": [
+    {
+     "name": "Edgeville Embers",
+     "rating": 1860,
+     "rd": 162,
+     "vol": 0.06,
+     "games": 8,
+     "conservative": 1535
+    },
+    {
+     "name": "Varrock Vanguard",
+     "rating": 1703,
+     "rd": 168,
+     "vol": 0.06,
+     "games": 8,
+     "conservative": 1367
+    },
+    {
+     "name": "Karamja Kindred",
+     "rating": 1769,
+     "rd": 205,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 1358
+    },
+    {
+     "name": "Lotus Sangha",
+     "rating": 1500,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 1082
+    },
+    {
+     "name": "Lumbridge Lantern",
+     "rating": 1404,
+     "rd": 205,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 993
+    },
+    {
+     "name": "Falador Fellowship",
+     "rating": 1332,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 915
+    },
+    {
+     "name": "Draynor Dawn",
+     "rating": 1241,
+     "rd": 205,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 830
+    },
+    {
+     "name": "Al Kharid Accord",
+     "rating": 1165,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 747
+    }
+   ]
+  },
+  "hardcore": {
+   "title": "Hardcore worlds",
+   "unit": "sangha",
+   "events": [
+    "One life, 4 hours: highest total level among survivors",
+    "One life, 4 hours: highest total level among survivors"
+   ],
+   "rows": [
+    {
+     "name": "Lotus Sangha",
+     "rating": 1840,
+     "rd": 170,
+     "vol": 0.06,
+     "games": 7,
+     "conservative": 1500
+    },
+    {
+     "name": "Lumbridge Lantern",
+     "rating": 1785,
+     "rd": 174,
+     "vol": 0.06,
+     "games": 7,
+     "conservative": 1436
+    },
+    {
+     "name": "Draynor Dawn",
+     "rating": 1500,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 1082
+    },
+    {
+     "name": "Al Kharid Accord",
+     "rating": 1482,
+     "rd": 224,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 1035
+    },
+    {
+     "name": "Karamja Kindred",
+     "rating": 1332,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 915
+    },
+    {
+     "name": "Edgeville Embers",
+     "rating": 1289,
+     "rd": 224,
+     "vol": 0.06,
+     "games": 3,
+     "conservative": 842
+    },
+    {
+     "name": "Falador Fellowship",
+     "rating": 1165,
+     "rd": 209,
+     "vol": 0.06,
+     "games": 4,
+     "conservative": 747
+    }
+   ]
+  }
+ }
+}

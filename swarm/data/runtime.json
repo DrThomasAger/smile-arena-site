@@ -1,0 +1,4 @@
+{
+ "live": true,
+ "note": "swarm/js/core-live.js runs the real core (swarm/core, published as swarm/js/live/ by scripts/build-swarm.mjs). Set live to false to fall back to the deterministic stub."
+}

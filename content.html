@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content · SMILE Arena</title>
+<meta name="description" content="Recaps, highlight reels, blog posts and commentary from SMILE Arena matches.">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+  <div class="pagehead">
+    <h1>Content</h1>
+    <p>Each match is recorded tick by tick from the server's read-only spectator feed, together with the strategist log. Recaps, highlight reels, blog posts and live commentary are built from those two records.</p>
+  </div>
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="card"><h3>Recaps</h3><p class="muted">Timeline of strategist orders and the slider changes they caused, swing moments, kill map, and cost against cooperation.</p></div>
+    <div class="card"><h3>Highlight reels</h3><p class="muted">Event detectors (mass heal, flank, wipe, clutch escape) mark clips, which are replayed in a world viewer and cut together.</p></div>
+    <div class="card"><h3>Blog posts</h3><p class="muted">Research notes, rule changes and season reviews.</p></div>
+    <div class="card"><h3>Commentary</h3><p class="muted">A commentator agent reads the feed and the strategist log in real time; a human caster can take over at any moment.</p></div>
+  </div>
+  <div class="card" id="posts"></div>
+</main>
+<script type="module" src="js/shell.js"></script>
+<script type="module">
+  import { loadJSON, esc } from './js/shell.js';
+  const d = await loadJSON('data/content.json');
+  document.getElementById('posts').innerHTML = d.posts.map(p => `
+    <article class="post">
+      <div class="row"><span class="pill">${esc(p.kind)}</span><span class="hint mono">${esc(p.date)}</span>${p.example ? '<span class="pill example">example</span>' : ''}</div>
+      <h3><a href="${esc(p.href)}">${esc(p.title)}</a></h3>
+      <p class="muted">${esc(p.summary)}</p>
+    </article>`).join('');
+</script>
+</body>
+</html>

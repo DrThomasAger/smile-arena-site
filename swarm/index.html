@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<base href="../">
+<title>Swarm · SMILE Arena</title>
+<meta name="description" content="Prompt-controlled agent swarm on sample data: pick one of 22 orchestration formats, watch messages travel only on permitted edges, take over any node by chat, hand it back.">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="stylesheet" href="css/swarm.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+  <div class="pagehead">
+    <h1>Swarm: a sangha you prompt</h1>
+    <p>Pick a format. The strategist chat prompts the top of the sangha; every node has its own chat and can be taken over, paused and handed back. Messages only travel on the edges the format allows. A simulated world runs in your browser: no game, no logins.</p>
+  </div>
+  <p class="banner" id="runtimeNote">Runtime: deterministic stub in the browser (tier 1). The real core (swarm/core) plugs in as <code>swarm/js/core-live.js</code>.</p>
+
+  <div class="sw-bar">
+    <label class="f" style="flex-direction:row;align-items:center;gap:8px"><span>Format</span><select id="format" aria-label="Orchestration format"></select></label>
+    <span class="pill ok" id="mode">AUTO</span>
+    <span class="pill warn" id="idleLeft" aria-live="polite"></span>
+    <span class="spacer"></span>
+    <button class="btn sm" type="button" id="tickBtn" title="Run one round now">Step</button>
+    <button class="btn sm" type="button" id="runBtn" aria-pressed="true">Pause clock</button>
+    <button class="btn sm bad" type="button" id="stopAll" title="Ctrl+Shift+Esc">Stop all</button>
+  </div>
+  <div class="sw-stop" id="stopBanner" hidden><b>STOPPED</b><span id="stopWhy"></span><span class="spacer"></span><button class="btn sm" type="button" id="resumeAll">Resume all</button></div>
+
+  <div class="sw-grid">
+    <div class="sw-col">
+      <div class="card sw-diagram">
+        <div class="sw-head"><h2 id="fTitle"></h2><span class="pill" id="fFamily"></span><span class="pill" id="fCounts"></span></div>
+        <div id="diagram"></div>
+        <div class="sw-legend" id="legend"></div>
+        <p class="sw-note" id="fNote"></p>
+        <details class="sw-ref"><summary>Original diagram of this format</summary><img id="refSvg" alt="" loading="lazy"></details>
+      </div>
+      <div class="card">
+        <h3>Nodes <span class="hint">click one to open its chat</span></h3>
+        <div class="sw-strip" id="strip" role="list"></div>
+      </div>
+      <div class="card sw-panel" id="nodePanel" hidden>
+        <div class="head">
+          <h2 id="nName"></h2><span class="role" id="nRole"></span><span class="pill sw-state" id="nState"></span>
+          <div class="acts">
+            <button class="btn sm" type="button" id="takeBtn">Take over</button>
+            <button class="btn sm" type="button" id="pauseBtn">Pause</button>
+            <button class="btn sm" type="button" id="backBtn">Hand back</button>
+            <button class="btn sm" type="button" id="closeBtn" aria-label="Close node chat">×</button>
+          </div>
+        </div>
+        <div class="sw-tabs" role="tablist" id="nTabs">
+          <button role="tab" aria-selected="true" data-tab="chat">Chat</button>
+          <button role="tab" aria-selected="false" data-tab="inbox">Inbox<b id="cInbox"></b></button>
+          <button role="tab" aria-selected="false" data-tab="outbox">Outbox<b id="cOutbox"></b></button>
+          <button role="tab" aria-selected="false" data-tab="reasoning">Reasoning</button>
+          <button role="tab" aria-selected="false" data-tab="prompt">Role prompt</button>
+        </div>
+        <div class="log" id="nLog" aria-live="polite"></div>
+        <pre id="nPrompt" hidden></pre>
+        <form id="nForm" class="row" style="margin-top:8px;flex-wrap:nowrap">
+          <label class="sr" for="nSay">Prompt this node</label>
+          <input id="nSay" type="text" style="flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:8px 10px" placeholder="Take over, then type an order (hold lavas, retreat to bank) or: status">
+          <button class="btn pri" type="submit">Send</button>
+        </form>
+        <p class="hint" id="nHint" style="margin-top:6px"></p>
+      </div>
+    </div>
+
+    <div class="sw-col">
+      <div class="card sw-chat">
+        <h2>Strategist chat <span class="hint" id="sTarget"></span></h2>
+        <div class="log" id="slog" aria-live="polite"></div>
+        <form id="sform">
+          <label class="sr" for="sorder">Order to the sangha</label>
+          <input id="sorder" type="text" placeholder="e.g. scouts report the east bridge, everyone hold">
+          <button class="btn pri" type="submit">Send</button>
+        </form>
+        <div class="sw-ex" id="sex"></div>
+        <div class="sw-keys">
+          <span><kbd>F8</kbd> take over / hand back the open node</span>
+          <span>Idle <span id="idleSec">10</span> s: hands back</span>
+          <span><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd> stop all</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Innovation log <span class="hint">what the team did differently</span></h3>
+        <ul id="innov" class="muted" style="font-size:13.5px"><li class="sw-empty">Nothing yet. Give an order or wait for reports.</li></ul>
+        <p class="hint mono" id="innovMetrics" aria-live="polite"></p>
+      </div>
+      <div class="card">
+        <h3>About this format</h3>
+        <p id="fSummary" class="muted" style="font-size:14px"></p>
+        <dl class="kv" id="fMetrics"></dl>
+      </div>
+    </div>
+  </div>
+</main>
+<script type="module" src="js/shell.js"></script>
+<script type="module" src="swarm/js/swarm-ui.js"></script>
+</body>
+</html>
