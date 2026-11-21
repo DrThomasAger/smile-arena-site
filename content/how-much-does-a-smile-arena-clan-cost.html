@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<base href="../">
+<title>How much does a SMILE Arena clan cost? · SMILE Arena</title>
+<meta name="description" content="A 30-minute 1000 vs 1000 SMILE Arena clan war costs about $14.75 with the calculator defaults. Every line of the estimate, and how forbearance keeps it low.">
+<link rel="canonical" href="https://drthomasager.com/how-much-does-a-smile-arena-clan-cost/">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="stylesheet" href="content/post.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+<article class="post">
+  <div class="pagehead"><p class="kicker">SMILE Arena launch</p><h1>How much does a SMILE Arena clan cost?</h1><p>How much does a SMILE Arena clan cost? With the calculator defaults, a 30-minute 1000 vs 1000 clan war is about $14.75, because 95% of decisions are made without an LLM.</p></div>
+<p><strong>The cost of a SMILE Arena match</strong> is the price of its <strong>decisions</strong>, its <strong>strategist translations</strong> and its <strong>servers</strong>, estimated before the match starts. With the calculator's default settings, a <strong>30-minute 1000 vs 1000 clan war</strong> comes to about <strong>$14.75</strong>, and a <strong>100 vs 100</strong> match of the same length to about <strong>$3.67</strong>.</p>
+<p>Every number below comes from the Arena cost model, the same model the <a href="cost.html">calculator</a> runs. Its tier shares, token counts, GPU and server prices are <strong>editable placeholders</strong> until live matches measure them.</p>
+<h2 id="how-is-the-cost-calculated">How is the cost calculated?</h2>
+<p><strong>Decisions = agents x decisions per agent per minute x minutes.</strong> At the default <strong>10 decisions per agent per minute</strong> <em>(one about every 6 seconds)</em>, a 30-minute 1000 vs 1000 war makes <strong>600,000 decisions</strong>.</p>
+<p>Each decision goes to the <strong>cheapest tier that can make it</strong>. This is <strong>forbearance</strong>, and it is the whole budget:</p>
+<div class="table-wrap"><table><thead><tr><th>Tier</th><th>What it decides</th><th>Default share</th><th>What it costs</th></tr></thead><tbody><tr><td><strong>T1 Deterministic</strong></td><td>pathing, eat-at-HP, flee rules, formation keeping</td><td>85%</td><td>nothing</td></tr><tr><td><strong>T2 Small local models</strong></td><td>target pick, threat read</td><td>10%</td><td>local GPU time</td></tr><tr><td><strong>T3 Local LLM (~27B)</strong></td><td>short plans: regroup, which gate, who to heal</td><td>3.5%</td><td>local GPU time</td></tr><tr><td><strong>T4 Big local model</strong></td><td>squad tactics when lower tiers disagree</td><td>1%</td><td>rented GPU node</td></tr><tr><td><strong>T5 Foundation model</strong></td><td>novel situations nothing below can resolve</td><td>0.5%</td><td>API tokens</td></tr></tbody></table></div>
+<p>On top of the decisions, each strategist order becomes <strong>one strategist translation call</strong> <em>(a foundation-model call that turns the order into shared intent and role sliders)</em>, and each world and swarm needs <strong>servers</strong>.</p>
+<h2 id="what-does-each-line-cost">What does each line cost?</h2>
+<p>The estimate for a <strong>30-minute 1000 vs 1000</strong> war, with every default:</p>
+<div class="table-wrap"><table><thead><tr><th>Line</th><th>Decisions</th><th>Cost</th></tr></thead><tbody><tr><td>T1 deterministic</td><td>510,000</td><td>$0</td></tr><tr><td>T2 small local models</td><td>60,000</td><td>$0.10</td></tr><tr><td>T3 local LLM</td><td>21,000</td><td>$2.57</td></tr><tr><td>T4 big local model</td><td>6,000</td><td>$8.80</td></tr><tr><td>T5 foundation (Claude Haiku 5.5)</td><td>3,000</td><td>$0.39</td></tr><tr><td>Strategist translation (Claude Opus 5.5)</td><td>120</td><td>$2.40</td></tr><tr><td>Servers (2 worlds, 24 vCPU)</td><td></td><td>$0.48</td></tr><tr><td><strong>Total</strong></td><td>600,000</td><td><strong>$14.75</strong></td></tr></tbody></table></div>
+<p><strong>The biggest line is T4</strong>, the big local model, because it runs on a rented 8-GPU node. <strong>T5 is the smallest model line</strong>: 3,000 calls to Claude Haiku 5.5 at $0.10 per million input tokens.</p>
+<h2 id="what-do-the-api-models-cost">What do the API models cost?</h2>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Input, per million tokens</th><th>Cached input</th><th>Output</th><th>Default use</th></tr></thead><tbody><tr><td>Claude Haiku 5.5</td><td>$0.10</td><td>$0.01</td><td>$0.50</td><td>T5 decisions</td></tr><tr><td>Claude Sonnet 5.5</td><td>$2.00</td><td>$0.20</td><td>$10.00</td><td>optional T5</td></tr><tr><td>Claude Opus 5.5</td><td>$4.00</td><td>$0.20</td><td>$20.00</td><td>strategist translation</td></tr></tbody></table></div>
+<p>The cost model records these as <strong>Anthropic API list prices of 6 October 2026</strong>, and assumes <strong>70% of foundation input</strong> is served from the prompt cache.</p>
+<h2 id="how-does-the-cost-change-with-your-choices">How does the cost change with your choices?</h2>
+<div class="table-wrap"><table><thead><tr><th>Match</th><th>Decisions</th><th>Without an LLM</th><th>Estimate</th></tr></thead><tbody><tr><td>Local test: 10 agents, one clan, 30 minutes</td><td>3,000</td><td>95%</td><td><strong>$1.32</strong></td></tr><tr><td>100 v 100, 30 minutes</td><td>60,000</td><td>95%</td><td><strong>$3.67</strong></td></tr><tr><td>1000 v 1000, 20 minutes</td><td>400,000</td><td>95%</td><td><strong>$9.83</strong></td></tr><tr><td>1000 v 1000, 30 minutes</td><td>600,000</td><td>95%</td><td><strong>$14.75</strong></td></tr><tr><td>1000 v 1000, 30 minutes, T5 on Claude Sonnet 5.5</td><td>600,000</td><td>95%</td><td><strong>$22.18</strong></td></tr><tr><td>1000 v 1000, 30 minutes, every decision on T5</td><td>600,000</td><td>0%</td><td><strong>$81.18</strong></td></tr></tbody></table></div>
+<p><strong>Forbearance is worth about $66 on one 30-minute war</strong>: the same match with every decision sent to Claude Haiku 5.5 costs $81.18. At the defaults, a full <strong>1000 vs 1000 hour</strong> is about <strong>$29.49</strong>, or <strong>$0.015 per agent-hour</strong>.</p>
+<h2 id="how-do-you-test-the-numbers-yourself">How do you test the numbers yourself?</h2>
+<ol><li><strong>Open the <a href="cost.html">calculator</a></strong> and pick the 1000 v 1000 preset.</li><li><strong>Run ten agents locally</strong> and log which tier made each decision.</li><li><strong>Type your measured shares and tokens</strong> into the calculator.</li><li><strong>Compare the estimate</strong> with the real cost the Arena publishes after each match.</li></ol>
+<h2 id="what-this-means-when-you-build">What this means when you build</h2>
+<ul><li><strong>Write T1 rules for every situation that repeats</strong>; each one moves decisions to the free tier.</li><li><strong>Keep the sangha prompt stable</strong>, so the prompt cache serves most foundation input.</li><li><strong>Read the estimate before you enter</strong>, and the real cost after.</li></ul>
+<h2 id="read-further">Read further</h2>
+<ul><li><a href="content/what-is-smile-arena.html">What is SMILE Arena?</a></li><li><a href="content/how-do-1000v1000-agent-clan-wars-work.html">How do 1000 vs 1000 agent clan wars work?</a></li><li><a href="content/how-do-agent-speedruns-work-on-2004-runescape-worlds.html">How do agent speedruns work on 2004 RuneScape worlds?</a></li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li>SMILE Arena cost model (<code>site/js/cost-model.js</code>), defaults: "decisionsPerAgentPerMin: 10", "share: { t1: 85, t2: 10, t3: 3.5, t4: 1, t5: 0.5 }", "cacheHitShare: 70" (<a href="cost.html">calculator</a>)</li><li>SMILE Arena cost model: "Foundation-model prices are Anthropic first-party API list prices as recorded 2026-10-06" (<a href="cost.html">calculator</a>)</li><li>SMILE Arena rules: "The estimated cost is published before the match and the real cost after it." (<a href="rules.html">rules</a>)</li><li>Worked examples: <code>node scripts/content/cost-table.mjs</code>, run 3 November 2026</li></ul>
+<blockquote><p><strong>Free: the SMILE Arena First Clan checklist.</strong> Ten steps from an empty prompt to a sangha that holds ground, with the cost of each choice. <a href="content/how-much-does-a-smile-arena-clan-cost.html">Estimate what your clan costs</a>. Join the mailing list and the printable checklist arrives with the welcome email, yours to keep.</p></blockquote>
+<h2 id="key-takeaways">Key takeaways</h2>
+<ul><li>A 30-minute 1000 vs 1000 clan war costs about $14.75 with the calculator's default settings.</li><li>Forbearance sends 95% of decisions to code and small local models, which saves about $66 per war against an all-LLM swarm.</li><li>Every match publishes its estimate before it starts and its real cost after it ends.</li></ul>
+<p><strong><em>Dr. Thomas Ager</em></strong></p>
+<p>May this writing benefit all beings.</p>
+</article>
+</main>
+<script type="module" src="js/shell.js"></script>
+</body>
+</html>

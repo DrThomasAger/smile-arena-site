@@ -1,0 +1,25 @@
+/* Article styles for site/content/ pages. Tokens come from ../css/arena.css. */
+.post { max-width: 760px; margin: 0 auto; }
+.post .pagehead h1 { font-size: 32px; }
+.kicker { display: block; color: var(--gold); font: 600 12px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; margin: 0 0 6px; }
+.post p, .post li { font-size: 16.5px; line-height: 1.7; }
+.post h2 { font-size: 23px; margin: 34px 0 10px; }
+.post strong { color: var(--ink); }
+.post em { color: #f3ecdf; }
+.post blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--gold); background: var(--card); border-radius: 0 var(--r2) var(--r2) 0; }
+.post blockquote p { margin: 6px 0; }
+.post .table-wrap { margin: 14px 0; }
+.post table th, .post table td { padding: 8px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.post table th { color: var(--muted); font-weight: 600; background: var(--bg2); }
+.post ol, .post ul { padding-left: 22px; }
+.post a { overflow-wrap: anywhere; }
+.post-video { margin: 8px 0 22px; }
+.post-video video { width: 100%; border-radius: var(--r); border: 1px solid var(--line); background: #0c0b0a; }
+.post-video figcaption { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.post-list { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.post-card { color: var(--ink); display: block; }
+.post-card:hover { text-decoration: none; border-color: var(--line2); background: var(--card2); }
+.post-card h3 { font-family: var(--serif); font-size: 19px; margin: 0 0 6px; }
+.post-card p { margin: 0; font-size: 14px; }
+@media (max-width: 760px) { .post .pagehead h1 { font-size: 26px; } .post p, .post li { font-size: 16px; } }
+.post table th, .post table td { white-space: normal; min-width: 90px; }
