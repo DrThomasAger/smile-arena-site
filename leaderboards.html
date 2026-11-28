@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leaderboards · SMILE Arena</title>
+<meta name="description" content="Glicko-2 ratings for clan wars, speedruns, Deadman and Hardcore worlds.">
+<link rel="stylesheet" href="css/arena.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main>
+  <div class="pagehead">
+    <h1>Leaderboards</h1>
+    <p>One Glicko-2 rating per format. Ranked by the conservative rating (rating minus twice the rating deviation), so a sangha with few games ranks below a proven one with a similar rating. Races and seasons with many entrants count as pairwise results in finishing order.</p>
+  </div>
+  <div class="banner" id="note" hidden></div>
+  <div class="row" id="tabs" role="tablist" style="margin-bottom:12px"></div>  <div class="table-wrap">
+    <table>
+      <thead><tr><th class="num">#</th><th id="unit">Clan</th><th class="num">Conservative</th><th class="num">Rating</th><th class="num">RD</th><th class="num">Games</th><th class="num">Volatility</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="hint" id="events" style="margin-top:8px"></p>
+  <p class="hint" id="gen"></p>
+</main>
+<script type="module" src="js/shell.js"></script>
+<script type="module">
+  import { loadJSON, esc } from './js/shell.js';
+  const d = await loadJSON('data/leaderboards.json');
+  if (d.example) { const n = document.getElementById('note'); n.hidden = false; n.textContent = d.note; }
+  const ids = Object.keys(d.boards);
+  let cur = (location.hash || '').slice(1); if (!ids.includes(cur)) cur = ids[0];
+  const show = id => {
+    cur = id; const b = d.boards[id];
+    document.querySelectorAll('#tabs button').forEach(x => { x.classList.toggle('pri', x.dataset.id === id); x.setAttribute('aria-selected', x.dataset.id === id); });
+    document.getElementById('unit').textContent = b.unit[0].toUpperCase() + b.unit.slice(1);
+    document.getElementById('rows').innerHTML = b.rows.map((r, i) => `<tr><td class="num">${i + 1}</td><td>${esc(r.name)}</td><td class="num gold">${r.conservative}</td><td class="num">${r.rating}</td><td class="num">${r.rd}</td><td class="num">${r.games}</td><td class="num">${r.vol.toFixed(4)}</td></tr>`).join('');
+    document.getElementById('events').textContent = 'Rated events: ' + b.events.join(' · ');
+    history.replaceState(null, '', '#' + id);
+  };
+  document.getElementById('tabs').innerHTML = ids.map(id => `<button class="btn" role="tab" type="button" data-id="${id}">${esc(d.boards[id].title)}</button>`).join('');
+  document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => show(b.dataset.id)));
+  document.getElementById('gen').textContent = `Built ${d.generatedAt.slice(0, 16).replace('T', ' ')} UTC from ${d.source}. Glicko-2, tau 0.5, new entrants start at 1500 ± 350.`;
+  show(cur);
+</script>
+</body>
+</html>
